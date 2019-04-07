@@ -3,12 +3,12 @@ import firebase from "firebase";
 import "./App.css";
 
 const config = {
-  apiKey: "AIzaSyDLwrJMzPRdO_Ras4YNoCo3KuYdF-rfbpY",
-  authDomain: "my-facebook-auth-app.firebaseapp.com",
-  databaseURL: "https://my-facebook-auth-app.firebaseio.com",
-  projectId: "my-facebook-auth-app",
-  storageBucket: "my-facebook-auth-app.appspot.com",
-  messagingSenderId: "119026616980"
+  apiKey: "AIzaSyBw_hfmUcnwYpiZdmP2tEpsFSS3tXxrJXo",
+  authDomain: "my-firebase-auth-kit.firebaseapp.com",
+  databaseURL: "https://my-firebase-auth-kit.firebaseio.com",
+  projectId: "my-firebase-auth-kit",
+  storageBucket: "my-firebase-auth-kit.appspot.com",
+  messagingSenderId: "278267327043"
 };
 
 firebase.initializeApp(config);
