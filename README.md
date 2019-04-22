@@ -24,20 +24,23 @@ https://firebase.google.com/products/firestore/
 
 ## Setup Firebase Hosting
 
-1. Create a new project.
-   ![](firebase_new.png)
+### `1. Create a new project.`
 
-2. Fill in the details.
-   ![](firebase_project_details.png)
+![](firebase_new.png)
 
-3. Enable Hosting.
+### `2. Fill in the details.`
+
+![](firebase_project_details.png)
+
+### `3. Enable Hosting.`
 
 ## Setup Firebase Cloud Firestore
 
-1. Enable Cloud Firestore.
+### `1. Enable Cloud Firestore.`
 
-2. Add a new collection and schema to cloud firestore.
-   ![](firebase_new_collection.png)
+### `2. Add a new collection and schema to cloud firestore.`
+
+![](firebase_new_collection.png)
 
 ## Deploy a React App to Firebase using Firebase Hosting
 
