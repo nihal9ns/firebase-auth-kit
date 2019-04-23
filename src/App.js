@@ -20,6 +20,33 @@ class App extends Component {
     user: null
   };
 
+  checkIfUserExists = async (email, providerId) => {
+    const db = firebase.firestore();
+    let result = [];
+    const doc = await db
+      .collection("user")
+      .where("email", "==", email)
+      .where("providerId", "==", providerId)
+      .get()
+      .then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+          // doc.data() is never undefined for query doc snapshots
+          // console.log(doc.id, " => ", doc.data());
+          result.push(doc.data());
+        });
+        return result;
+      })
+      .catch(error => {
+        console.log("Error getting documents: ", error);
+      });
+
+    if (doc) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   facebookLogin = () => {
     const provider = new firebase.auth.FacebookAuthProvider();
     auth()
@@ -41,19 +68,44 @@ class App extends Component {
       });
   };
 
-  googleLogin = () => {
+  googleLogin = async () => {
     var provider = new firebase.auth.GoogleAuthProvider();
     auth().signInWithPopup(provider);
     firebase
       .auth()
       .signInWithPopup(provider)
-      .then(result => {
-        // This gives you a Google Access Token. You can use it to access the Google API.
-        // var token = result.credential.accessToken;
-        // console.log("token : ", token);
-        // The signed-in user info.
-        var user = result.user;
-        // console.log("user : ", user);
+      .then(({ user }) => {
+        this.setState({ user }, async () => {
+          const data = user.providerData[0];
+          const db = firebase.firestore();
+          const test = await this.checkIfUserExists(
+            user.email,
+            data.providerId
+          );
+          if (this.checkIfUserExists(user.email, data.providerId)) {
+            console.log("USER EXISTS");
+          } else {
+            db.collection("user").add({
+              displayName: data.displayName,
+              email: user.email,
+              phoneNumber: user.phoneNumber,
+              photoURL: data.photoURL,
+              providerId: data.providerId,
+              refreshToken: user.refreshToken,
+              uid: data.uid
+            });
+          }
+        });
+      });
+  };
+
+  twitterLogin = () => {
+    var provider = new firebase.auth.TwitterAuthProvider();
+    auth().signInWithPopup(provider);
+    firebase
+      .auth()
+      .signInWithPopup(provider)
+      .then(({ user }) => {
         this.setState({ user }, () => {
           const data = user.providerData[0];
           const db = firebase.firestore();
@@ -67,16 +119,29 @@ class App extends Component {
             uid: data.uid
           });
         });
-      })
-      .catch(error => {
-        // Handle Errors here.
-        // var errorCode = error.code;
-        var errorMessage = error.message;
-        // The email of the user's account used.
-        // var email = error.email;
-        // The firebase.auth.AuthCredential type that was used.
-        // var credential = error.credential;
-        alert("Error : ", errorMessage);
+      });
+  };
+
+  githubLogin = () => {
+    var provider = new firebase.auth.GithubAuthProvider();
+    auth().signInWithPopup(provider);
+    firebase
+      .auth()
+      .signInWithPopup(provider)
+      .then(({ user }) => {
+        this.setState({ user }, () => {
+          const data = user.providerData[0];
+          const db = firebase.firestore();
+          db.collection("user").add({
+            displayName: data.displayName,
+            email: data.email,
+            phoneNumber: data.phoneNumber,
+            photoURL: data.photoURL,
+            providerId: data.providerId,
+            refreshToken: user.refreshToken,
+            uid: data.uid
+          });
+        });
       });
   };
 
@@ -129,6 +194,10 @@ class App extends Component {
         <button onClick={this.facebookLogin}>Login with Facebook</button> <br />
         <br />
         <button onClick={this.googleLogin}>Login with Google</button> <br />
+        <br />
+        <button onClick={this.twitterLogin}>Login with Twitter</button> <br />
+        <br />
+        <button onClick={this.githubLogin}>Login with GitHub</button> <br />
         <br />
         <form>
           <input type="text" ref="email" placeholder="email" /> <br />
